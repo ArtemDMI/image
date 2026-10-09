@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Схема локации</title>
+    <title>Location Map</title>
     <style>
         * { box-sizing: border-box; }
         html, body {
@@ -108,13 +108,13 @@
 <body>
     <section id="win">
         <header id="bar" draggable="true" title="Перетащите окно. Колесо мыши меняет масштаб.">
-            <span id="title" role="heading" aria-level="1">Схема локации</span>
+            <span id="title" role="heading" aria-level="1">Location Map</span>
             <input id="scale" type="range" min="0.5" max="2" step="0.05" value="1" aria-label="Масштаб окна">
             <span id="scaleLabel">100%</span>
         </header>
         <div id="stage">
             <p id="placeholder">Нажмите «Генерация», чтобы собрать схему текущей сцены.</p>
-            <img id="pic" alt="Схема локации" hidden draggable="false">
+            <img id="pic" alt="Location Map" hidden draggable="false">
         </div>
         <p id="status"></p>
         <button id="go" type="button">Генерация</button>
