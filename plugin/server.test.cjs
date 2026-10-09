@@ -46,7 +46,7 @@ test('serves the map window and refuses a click without SillyTavern', async () =
         const scriptUrl = new URL(html.match(/src="([^"]+viewer\.js[^"]*)"/)[1], origin);
         const script = await fetch(scriptUrl);
         assert.equal(script.status, 200);
-        assert.match(await script.text(), /Растянуть|resizeBy|setScale/);
+        assert.match(await script.text(), /EventSource/);
 
         const generateUrl = new URL('/generate', origin);
         generateUrl.search = new URL(pageUrl).search;
