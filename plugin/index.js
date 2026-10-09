@@ -11,6 +11,7 @@ const clients = new Set();
 let httpServer = null;
 let origin = '';
 let leaderId = null;
+let starting = null;
 let currentJobId = 0;
 let latestImage = null;
 let pingTimer = null;
@@ -289,6 +290,19 @@ function onRequest(req, res) {
     });
 }
 
+function ensureServer() {
+    if (origin && httpServer) {
+        return Promise.resolve();
+    }
+    if (starting) {
+        return starting;
+    }
+    starting = startServer().finally(() => {
+        starting = null;
+    });
+    return starting;
+}
+
 function startServer() {
     httpServer = http.createServer(onRequest);
     // Node closes a quiet socket after a few minutes. The map tab holds one stream for the whole visit.
@@ -319,12 +333,27 @@ function startServer() {
     });
 }
 
+function sessionPayload() {
+    return { origin, token };
+}
+
 async function init(router) {
-    await startServer();
+    // The port stays closed until the user asks. SillyTavern only loads this plugin at startup.
     router.get('/session', (_req, res) => {
-        res.json({ origin, token });
+        if (!origin) {
+            res.status(404).json({ error: 'Сервер не запущен' });
+            return;
+        }
+        res.json(sessionPayload());
     });
-    console.log(`[location-map] ${origin}`);
+    router.post('/start', async (_req, res) => {
+        try {
+            await ensureServer();
+            res.json(sessionPayload());
+        } catch (error) {
+            res.status(500).json({ error: String(error?.message || 'Сервер не запустился').slice(0, 300) });
+        }
+    });
 }
 
 async function exit() {
@@ -339,10 +368,11 @@ async function exit() {
     }
     await new Promise(resolve => httpServer.close(resolve));
     httpServer = null;
+    origin = '';
 }
 
 if (require.main === module) {
-    init({ get() {} }).then(() => {
+    ensureServer().then(() => {
         console.log(`${origin}/?token=${token}`);
     }).catch(error => {
         console.error(error);

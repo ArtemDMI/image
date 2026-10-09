@@ -14,6 +14,7 @@ import {
 
 const EXTENSION_NAME = 'LocationMap';
 const PLUGIN_SESSION_URL = '/api/plugins/location-map/session';
+const PLUGIN_START_URL = '/api/plugins/location-map/start';
 const TEXT_TIMEOUT_MS = 45_000;
 const IMAGE_TIMEOUT_MS = 120_000;
 const TOAST_OPTIONS = Object.freeze({
@@ -121,6 +122,10 @@ function bindSettingsUi() {
             return;
         }
         window.open(url, '_blank');
+    });
+
+    $('#location_map_start').on('click', () => {
+        void startWindowServer();
     });
 }
 
@@ -392,7 +397,16 @@ function openHostEvents() {
     };
 }
 
-async function connectWindow() {
+function applySession(payload) {
+    if (!payload?.origin || !payload?.token) {
+        throw new Error('Сервер окна вернул пустой адрес');
+    }
+    session = payload;
+    updateWindowUi();
+    openHostEvents();
+}
+
+async function refreshSession() {
     const response = await fetch(PLUGIN_SESSION_URL, {
         method: 'GET',
         headers: getRequestHeaders(),
@@ -400,26 +414,37 @@ async function connectWindow() {
     if (!response.ok) {
         session = null;
         updateWindowUi();
-        throw new Error('Сервер окна не запущен');
+        return;
     }
+    applySession(await response.json());
+}
 
-    let payload;
+async function startWindowServer() {
+    const button = document.querySelector('#location_map_start');
+    if (button) {
+        button.disabled = true;
+    }
     try {
-        payload = await response.json();
-    } catch {
-        session = null;
-        updateWindowUi();
-        throw new Error('Сервер окна не запущен');
+        const response = await fetch(PLUGIN_START_URL, {
+            method: 'POST',
+            headers: getRequestHeaders(),
+        });
+        const body = await response.text();
+        if (!response.ok) {
+            // 404 means this SillyTavern process started before the plugin existed.
+            const message = response.status === 404
+                ? 'Плагин окна ещё не загружен. Перезапустите SillyTavern один раз.'
+                : `HTTP ${response.status}${body ? `: ${body.slice(0, 160)}` : ''}`;
+            throw new Error(message);
+        }
+        applySession(JSON.parse(body));
+    } catch (error) {
+        notifyError('Сервер окна не запустился', error);
+    } finally {
+        if (button) {
+            button.disabled = false;
+        }
     }
-    if (!payload?.origin || !payload?.token) {
-        session = null;
-        updateWindowUi();
-        throw new Error('Сервер окна вернул пустой адрес');
-    }
-
-    session = payload;
-    updateWindowUi();
-    openHostEvents();
 }
 
 jQuery(async () => {
@@ -437,9 +462,9 @@ jQuery(async () => {
     }
 
     try {
-        await connectWindow();
+        await refreshSession();
         console.log(`[${EXTENSION_NAME}] Ready`);
     } catch (error) {
-        notifyError('Окно схемы не подключено', error);
+        console.warn(`[${EXTENSION_NAME}] Адрес окна не прочитан`, error);
     }
 });
