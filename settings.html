@@ -1,0 +1,86 @@
+<div class="location-map-settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>Схема локации</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            <div class="location-map-row">
+                <label for="location_map_image_model">Модель картинки</label>
+                <input
+                    id="location_map_image_model"
+                    class="text_pole"
+                    type="text"
+                    value="google/gemini-3.1-flash-lite-image"
+                    placeholder="provider/model-name"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+            </div>
+
+            <div class="location-map-row">
+                <label for="location_map_prompt_model">Модель промпта</label>
+                <input
+                    id="location_map_prompt_model"
+                    class="text_pole"
+                    type="text"
+                    value="google/gemini-3.8-flash"
+                    placeholder="provider/model-name"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+            </div>
+
+            <div class="location-map-row">
+                <label for="location_map_temperature">Температура промпта</label>
+                <input
+                    id="location_map_temperature"
+                    class="text_pole"
+                    type="number"
+                    min="0"
+                    max="2"
+                    step="0.1"
+                    value="0.7"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="location-map-row">
+                <label for="location_map_prompt">Промпт</label>
+                <textarea
+                    id="location_map_prompt"
+                    class="text_pole"
+                    rows="12"
+                    spellcheck="false"
+                ></textarea>
+            </div>
+
+            <div class="location-map-row">
+                <label for="location_map_attempts">Попытки</label>
+                <input
+                    id="location_map_attempts"
+                    class="text_pole"
+                    type="number"
+                    min="1"
+                    max="5"
+                    step="1"
+                    value="2"
+                >
+            </div>
+
+            <div class="location-map-section-title">Окно</div>
+
+            <p id="location_map_hint" class="location-map-hint">
+                Окно — отдельная вкладка, не панель чата. В config.yaml включите enableServerPlugins и скопируйте папку plugin в SillyTavern/plugins/location-map.
+            </p>
+
+            <div class="location-map-row">
+                <label for="location_map_url">Адрес вкладки</label>
+                <div class="location-map-actions">
+                    <input id="location_map_url" class="text_pole" type="text" readonly spellcheck="false">
+                    <button id="location_map_open" class="menu_button" type="button" disabled>Открыть вкладку</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

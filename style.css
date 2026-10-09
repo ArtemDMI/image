@@ -1,0 +1,42 @@
+.location-map-settings .inline-drawer-content {
+    padding: 0.5rem;
+}
+
+.location-map-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.location-map-row:last-child {
+    margin-bottom: 0;
+}
+
+.location-map-section-title {
+    margin: 0.85rem 0 0.55rem;
+    font-weight: 700;
+}
+
+.location-map-hint {
+    margin: 0 0 0.75rem;
+}
+
+.location-map-hint[hidden] {
+    display: none;
+}
+
+.location-map-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+#location_map_open {
+    align-self: flex-start;
+}
+
+#location_map_prompt {
+    min-height: 12rem;
+    resize: vertical;
+}

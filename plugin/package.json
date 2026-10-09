@@ -1,0 +1,6 @@
+{
+    "name": "location-map-server",
+    "private": true,
+    "type": "commonjs",
+    "main": "index.js"
+}

@@ -1,0 +1,11 @@
+{
+    "display_name": "Схема локации",
+    "loading_order": 160,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "adlso",
+    "version": "0.1.0",
+    "minimum_client_version": "1.12.6"
+}
